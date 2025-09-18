@@ -5,7 +5,9 @@ import java.util.List;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -16,6 +18,8 @@ import com.alumnositm.todo.entities.TodoEntity;
 import com.alumnositm.todo.services.TodoServices;
 
 import lombok.extern.slf4j.Slf4j;
+
+
 
 
 
@@ -35,6 +39,17 @@ public class TodoController {
         return ResponseEntity.ok(todoServices.allTodos());
     }
 
+    @GetMapping("{idTodo}")
+    public ResponseEntity<TodoEntity> findTodoById(@PathVariable int idTodo) {
+        TodoEntity todo = todoServices.findById(idTodo);
+        if(todo==null){
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok(todo);
+        
+    }
+    
+
     @PostMapping()
     public ResponseEntity<TodoEntity> createTodo(@RequestBody CreateTodoRequest createTodoRequest) {
         TodoEntity saved = todoServices.createTodo(createTodoRequest);
@@ -48,6 +63,15 @@ public class TodoController {
         return ResponseEntity.created(location).body(saved);
     }
     
+
+    @PutMapping("update/{idTodo}")
+    public ResponseEntity<TodoEntity> putMethodName(@PathVariable int idTodo, @RequestBody CreateTodoRequest entity) {
+        TodoEntity todo = todoServices.updateTodoById(idTodo,entity);
+        if(todo==null){
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok(todo);
+    }
 
 
     

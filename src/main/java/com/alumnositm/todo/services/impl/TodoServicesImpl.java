@@ -46,6 +46,28 @@ public class TodoServicesImpl implements TodoServices {
        return todoRepository.save(entity);
     }
 
+    @Override
+    public TodoEntity findById(int idTodo) {
+       TodoEntity todo = todoRepository.findById((long)idTodo).orElse(null);
+       return todo;
+    }
+
+    @Override
+    public TodoEntity updateTodoById(int idTodo, CreateTodoRequest entity) {
+        TodoEntity todoEntity = todoRepository.findById((long)idTodo).orElse(null);
+        if(todoEntity!=null){
+            todoEntity.setTitle(entity.getTitle());
+            todoEntity.setDescription(entity.getDescription());
+            todoEntity.setStatus(TodoStatus.COMPLETED);
+            todoRepository.save(todoEntity);
+            return todoEntity;
+        }
+        return null;
+
+    }
+
+    
+
 
 
 }

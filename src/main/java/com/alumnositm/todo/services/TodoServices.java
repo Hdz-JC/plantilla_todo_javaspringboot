@@ -10,4 +10,8 @@ public interface TodoServices {
     List   <TodoEntity> allTodos();
 
     TodoEntity createTodo(CreateTodoRequest createTodoRequest);
+
+    TodoEntity findById(int idTodo);
+
+    TodoEntity updateTodoById(int idTodo, CreateTodoRequest entity);
 }
