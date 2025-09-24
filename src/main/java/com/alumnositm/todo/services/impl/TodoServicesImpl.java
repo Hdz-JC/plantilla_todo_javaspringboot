@@ -2,6 +2,8 @@ package com.alumnositm.todo.services.impl;
 
 import java.util.List;
 
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Service;
 
 import com.alumnositm.todo.dtos.request.CreateTodoRequest;
@@ -14,9 +16,11 @@ import com.alumnositm.todo.services.TodoServices;
 public class TodoServicesImpl implements TodoServices {
 
     private final TodoRepository todoRepository;
+    private final JdbcTemplate jdbcTemplate;
 
-    public TodoServicesImpl(TodoRepository todoRepository) {
+    public TodoServicesImpl(TodoRepository todoRepository, JdbcTemplate jdbcTemplate) {
         this.todoRepository = todoRepository;
+        this.jdbcTemplate = jdbcTemplate;
     }
 
     @Override
@@ -64,6 +68,22 @@ public class TodoServicesImpl implements TodoServices {
         }
         return null;
 
+    }
+
+    @Override
+    public List<TodoEntity> findTodosByTitle(String queryParam) {
+        String sql = "Select * From todos where title like '%"+queryParam+"%'";
+        RowMapper<TodoEntity> rowMapper = (rs,rowNum)->{
+            TodoEntity todo = new TodoEntity();
+            todo.setId(rs.getLong("id"));
+            todo.setTitle(rs.getString("title"));
+            todo.setDescription(rs.getString("description"));
+            todo.setStatus(TodoStatus.valueOf(rs.getString("status")));
+            return todo;
+        };
+
+        List<TodoEntity> todos = jdbcTemplate.query(sql, rowMapper);
+        return todos;
     }
 
     

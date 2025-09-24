@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
@@ -71,6 +72,12 @@ public class TodoController {
             return ResponseEntity.notFound().build();
         }
         return ResponseEntity.ok(todo);
+    }
+
+    @GetMapping("search")
+    public ResponseEntity<List<TodoEntity>> findTodosByTitle(@RequestParam("q") String queryParam){
+        List<TodoEntity> todos =todoServices.findTodosByTitle(queryParam);
+        return ResponseEntity.ok(todos);
     }
 
 

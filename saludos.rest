@@ -20,3 +20,8 @@ Content-Type: application/json
   "title": "New Todo",
   "description": "bogarin estubo aqui"
 }
+###
+GET http://localhost:8080/api/v1/todos/search?q=New HTTP/1.1
+
+###
+GET http://localhost:8080/api/v1/todos/search?q=%25'%20OR%20'1'%3D'1%20--%20 HTTP/1.1

@@ -14,4 +14,6 @@ public interface TodoServices {
     TodoEntity findById(int idTodo);
 
     TodoEntity updateTodoById(int idTodo, CreateTodoRequest entity);
+
+    List<TodoEntity> findTodosByTitle(String queryParam);
 }
