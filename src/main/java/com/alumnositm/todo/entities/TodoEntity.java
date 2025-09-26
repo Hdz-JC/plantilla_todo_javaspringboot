@@ -45,4 +45,8 @@ public class TodoEntity {
     @Column(nullable = false)
     private TodoStatus status;
 
+    @Column(nullable = false,columnDefinition = "boolean default false")
+    @Builder.Default
+    private boolean deleted = false; // por defecto false
+
 }

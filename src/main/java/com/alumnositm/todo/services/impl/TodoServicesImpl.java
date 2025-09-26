@@ -26,8 +26,8 @@ public class TodoServicesImpl implements TodoServices {
         //     new TodoEntity(2L, "Build a REST API", "Create a RESTful API using Spring Boot", TodoStatus.IN_PROGRESS),
         //     new TodoEntity(3L, "Write Unit Tests", "Write unit tests for the application", TodoStatus.COMPLETED)
         // );
-       List<TodoEntity> todos  = todoRepository.findAll();
-        return todos;
+       //List<TodoEntity> todos  = todoRepository.findAll();
+        return todoRepository.findByDeletedFalse();
     }
 
     @Override
@@ -42,14 +42,16 @@ public class TodoServicesImpl implements TodoServices {
     entity.setTitle(createTodoRequest.getTitle());
     entity.setDescription(createTodoRequest.getDescription());
     entity.setStatus(TodoStatus.PENDING);
+    entity.setDeleted(false);
 
        return todoRepository.save(entity);
     }
 
     @Override
     public TodoEntity findById(int idTodo) {
-       TodoEntity todo = todoRepository.findById((long)idTodo).orElse(null);
-       return todo;
+      // TodoEntity todo = todoRepository.findById((long)idTodo).orElse(null);
+       return todoRepository.findByIdAndDeletedFalse(Long.valueOf(idTodo))
+                .orElse(null);
     }
 
     @Override
@@ -59,6 +61,7 @@ public class TodoServicesImpl implements TodoServices {
             todoEntity.setTitle(entity.getTitle());
             todoEntity.setDescription(entity.getDescription());
             todoEntity.setStatus(TodoStatus.COMPLETED);
+            todoEntity.setDeleted(entity.isDeleted());
             todoRepository.save(todoEntity);
             return todoEntity;
         }
@@ -66,8 +69,36 @@ public class TodoServicesImpl implements TodoServices {
 
     }
 
+     @Override
+    public TodoEntity deleteTodoById(Long idTodo) {
+        // First find the todo (only non-deleted ones)
+        return todoRepository.findByIdAndDeletedFalse(idTodo)
+            .map(todo -> {
+                todoRepository.deleteById(idTodo);
+                return todo; // return the entity before deletion
+            })
+            .orElseThrow(() -> new RuntimeException("Todo con ID " + idTodo + " no encontrado"));
+    }
+
+   @Override
+    public TodoEntity softDeleteById(int idTodo,CreateTodoRequest entity) {
+        TodoEntity todoEntity = todoRepository.findById((long)idTodo).orElse(null);
+        if(todoEntity!=null){
+            todoEntity.setTitle(entity.getTitle());
+            todoEntity.setDescription(entity.getDescription());
+            todoEntity.setStatus(TodoStatus.COMPLETED);
+            todoEntity.setDeleted(true);
+            todoRepository.save(todoEntity);
+            return todoEntity;
+        }
+        return null;
+    }
+
+}
+
+
     
 
 
 
-}
+

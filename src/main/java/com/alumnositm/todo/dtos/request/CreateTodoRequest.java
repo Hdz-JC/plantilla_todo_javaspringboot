@@ -8,9 +8,11 @@ import lombok.Setter;
 public class CreateTodoRequest {
     private String title;
     private String description;
+    private boolean deleted;
 
-    public CreateTodoRequest( String title, String description) {
+    public CreateTodoRequest( String title, String description, boolean deleted) {
         this.title = title;
         this.description = description;
+        this.deleted = deleted;
     }
 }
