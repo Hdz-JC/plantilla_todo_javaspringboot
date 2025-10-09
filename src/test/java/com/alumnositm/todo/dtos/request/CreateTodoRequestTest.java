@@ -3,6 +3,7 @@ package com.alumnositm.todo.dtos.request;
 import static org.junit.jupiter.api.Assertions.*;
 
 import java.util.Set;
+import java.util.regex.Pattern;
 
 import org.junit.jupiter.api.Test;
 
@@ -63,6 +64,49 @@ public class CreateTodoRequestTest {
         CreateTodoRequest requestSpaceTitleTodo=new CreateTodoRequest("     ","descripcion valida");
         violations=validator.validate(requestSpaceTitleTodo);
         assertTrue(violations.stream().anyMatch(v->v.getMessage().equals("El titulo no puede estar vacio")));
+        
        
+    }
+
+    @Test
+    void testDescriptionNotBlankValidation(){
+        Set<ConstraintViolation<CreateTodoRequest>> violations;
+        Validator validator= Validation.buildDefaultValidatorFactory().getValidator();
+
+        //Prueba de descripcion nula
+        CreateTodoRequest requestNullDescriptionTodo = new CreateTodoRequest("Titulo valido", null);
+        violations= validator.validate(requestNullDescriptionTodo);
+        assertTrue(violations.stream().anyMatch(d->d.getMessage().equals("La descripcion no puede estar vacia")));
+
+        //Prueba de descripcion Vacia
+        CreateTodoRequest requestEmptyDescriptionTodo = new CreateTodoRequest("Titulo valido", "");
+        violations=validator.validate(requestEmptyDescriptionTodo);
+        assertTrue(violations.stream().anyMatch(d->d.getMessage().equals("La descripcion no puede estar vacia")));
+
+        //Prueba descripcion con espacios en blanco
+        CreateTodoRequest requestBlankSpaceDescriptionTodo = new CreateTodoRequest("Titulo valido", "    ");
+        violations= validator.validate(requestBlankSpaceDescriptionTodo);
+        assertTrue(violations.stream().anyMatch(d->d.getMessage().equals("La descripcion no puede estar vacia")));
+    }
+
+    @Test
+    void testRegex(){
+         //Test Expresion regular
+        CreateTodoRequest requestRegexValidateTitle = new CreateTodoRequest("Titulovalido", "descripcion valida");
+        assertTrue(requestRegexValidateTitle.getTitle().matches("^[A-Za-zÁÉÍÓÚáéíóúÑñ\\\\s.!]+$"));
+
+        CreateTodoRequest requestRegexCaracteres = new CreateTodoRequest("$#$%#$", "descripcion valida");
+        assertFalse(requestRegexCaracteres.getTitle().matches("^[A-Za-zÁÉÍÓÚáéíóúÑñ\\\\s.!]+$"));
+    }
+
+    @Test
+    void testRegularExpressions(){
+        Set<ConstraintViolation<CreateTodoRequest>> violations;
+        Validator validator= Validation.buildDefaultValidatorFactory().getValidator();
+        
+        CreateTodoRequest requestTestRegularExpressionTitle = new CreateTodoRequest("Titulo valido 123", "descripcion valida");
+        violations = validator.validate(requestTestRegularExpressionTitle);
+        System.out.println(violations.isEmpty()? "cumplimos con el regex":"No cumpimos con el regex");
+        assertTrue(violations.stream().anyMatch(v->v.getMessage().equals("El titulo no puede tener espacios al inicio o al final")));
     }
 }
