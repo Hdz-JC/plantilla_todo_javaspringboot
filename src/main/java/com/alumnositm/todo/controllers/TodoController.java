@@ -4,6 +4,7 @@ import java.net.URI;
 import java.util.List;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -15,6 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import com.alumnositm.todo.dtos.request.CreateTodoRequest;
+import com.alumnositm.todo.dtos.request.UpdateTodoRequest;
 import com.alumnositm.todo.entities.TodoEntity;
 import com.alumnositm.todo.services.TodoServices;
 
@@ -67,12 +69,21 @@ public class TodoController {
     
 
     @PutMapping("update/{idTodo}")
-    public ResponseEntity<TodoEntity> putMethodName(@PathVariable int idTodo, @RequestBody CreateTodoRequest entity) {
+    public ResponseEntity<TodoEntity> putMethodName(@PathVariable int idTodo, @RequestBody UpdateTodoRequest entity) {
         TodoEntity todo = todoServices.updateTodoById(idTodo,entity);
         if(todo==null){
             return ResponseEntity.notFound().build();
         }
         return ResponseEntity.ok(todo);
+    }
+
+    @DeleteMapping("delete/{idTodo}")
+    public ResponseEntity<Void> deleteTodoById(@PathVariable int idTodo) {
+        boolean deleted = todoServices.deleteTodoById(idTodo);
+        if(!deleted){
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.noContent().build();
     }
 
     @GetMapping("search")

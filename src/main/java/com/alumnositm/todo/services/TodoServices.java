@@ -3,6 +3,7 @@ package com.alumnositm.todo.services;
 import java.util.List;
 
 import com.alumnositm.todo.dtos.request.CreateTodoRequest;
+import com.alumnositm.todo.dtos.request.UpdateTodoRequest;
 import com.alumnositm.todo.entities.TodoEntity;
 
 public interface TodoServices {
@@ -13,7 +14,9 @@ public interface TodoServices {
 
     TodoEntity findById(int idTodo);
 
-    TodoEntity updateTodoById(int idTodo, CreateTodoRequest entity);
+    TodoEntity updateTodoById(int idTodo, UpdateTodoRequest entity);
 
     List<TodoEntity> findTodosByTitle(String queryParam);
+
+    boolean deleteTodoById(int idTodo);
 }

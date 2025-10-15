@@ -19,7 +19,6 @@ public class CreateTodoRequestTest {
         CreateTodoRequest createTodoRequest = new CreateTodoRequest(title, descripcion);
         assertEquals(descripcion, createTodoRequest.getDescription());
         assertEquals(title, createTodoRequest.getTitle());
-
     }
 
     // *profe quiere que aga una instania con valores en ella
@@ -42,7 +41,6 @@ public class CreateTodoRequestTest {
 
         assertNotEquals(title, createTodoRequest.getTitle());
         assertNotEquals(descripcion, createTodoRequest.getDescription());
-
     }
 
     @Test
@@ -64,7 +62,6 @@ public class CreateTodoRequestTest {
         CreateTodoRequest requestSpaceTitleTodo = new CreateTodoRequest("     ", "descripcion valida");
         violations = validator.validate(requestSpaceTitleTodo);
         assertTrue(violations.stream().anyMatch(v -> v.getMessage().equals("El titulo no puede estar vacio")));
-
     }
 
     @Test
@@ -86,7 +83,6 @@ public class CreateTodoRequestTest {
         CreateTodoRequest requestSpaceDescriptionTodo = new CreateTodoRequest("titulo valido", "       ");
         violations = validator.validate(requestSpaceDescriptionTodo);
         assertTrue(violations.stream().anyMatch(v -> v.getMessage().equals("La descripcion no puede estar vacia")));
-
     }
 
     @Test
@@ -99,5 +95,4 @@ public class CreateTodoRequestTest {
         System.out.println(violations.isEmpty()? "cumplimos con el regex" : "no cumplimos con el regex");
         assertTrue(violations.stream().anyMatch(v -> v.getMessage().equals("El titulo no puede tener espacios al inicio o al final")));
     }
-
 }

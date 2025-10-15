@@ -22,6 +22,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import com.alumnositm.todo.dtos.request.CreateTodoRequest;
+import com.alumnositm.todo.dtos.request.UpdateTodoRequest;
 import com.alumnositm.todo.entities.TodoEntity;
 import com.alumnositm.todo.helpers.TodoStatus;
 import com.alumnositm.todo.services.TodoServices;
@@ -108,13 +109,13 @@ class TodoControllerTest {
     @Test
     @DisplayName("PUT /api/v1/todos/update/{id} encontrado -> 200")
     void update_found() throws Exception {
-        CreateTodoRequest req = new CreateTodoRequest("Updated", "Desc updated");
+        UpdateTodoRequest req = new UpdateTodoRequest("Updated", "Desc updated", TodoStatus.COMPLETED);
         TodoEntity updated = sampleTodo(1L);
         updated.setTitle("Updated");
         updated.setDescription("Desc updated");
         updated.setStatus(TodoStatus.COMPLETED);
 
-        given(todoServices.updateTodoById(eq(1), any(CreateTodoRequest.class))).willReturn(updated);
+        given(todoServices.updateTodoById(eq(1), any(UpdateTodoRequest.class))).willReturn(updated);
 
         mockMvc.perform(put("/api/v1/todos/update/{id}", 1)
                 .contentType(MediaType.APPLICATION_JSON)
@@ -128,8 +129,8 @@ class TodoControllerTest {
     @Test
     @DisplayName("PUT /api/v1/todos/update/{id} no encontrado -> 404")
     void update_notFound() throws Exception {
-        CreateTodoRequest req = new CreateTodoRequest("Updated", "Desc updated");
-        given(todoServices.updateTodoById(eq(999), any(CreateTodoRequest.class))).willReturn(null);
+        UpdateTodoRequest req = new UpdateTodoRequest("Updated", "Desc updated", TodoStatus.IN_PROGRESS);
+        given(todoServices.updateTodoById(eq(999), any(UpdateTodoRequest.class))).willReturn(null);
 
         mockMvc.perform(put("/api/v1/todos/update/{id}", 999)
                 .contentType(MediaType.APPLICATION_JSON)

@@ -7,6 +7,7 @@ import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Service;
 
 import com.alumnositm.todo.dtos.request.CreateTodoRequest;
+import com.alumnositm.todo.dtos.request.UpdateTodoRequest;
 import com.alumnositm.todo.entities.TodoEntity;
 import com.alumnositm.todo.helpers.TodoStatus;
 import com.alumnositm.todo.repositorys.TodoRepository;
@@ -57,11 +58,12 @@ public class TodoServicesImpl implements TodoServices {
     }
 
     @Override
-    public TodoEntity updateTodoById(int idTodo, CreateTodoRequest entity) {
+    public TodoEntity updateTodoById(int idTodo, UpdateTodoRequest entity) {
         TodoEntity todoEntity = todoRepository.findById((long)idTodo).orElse(null);
         if(todoEntity!=null){
             todoEntity.setTitle(entity.getTitle());
             todoEntity.setDescription(entity.getDescription());
+            // el error viene desde aqui
             todoEntity.setStatus(TodoStatus.COMPLETED);
             todoRepository.save(todoEntity);
             return todoEntity;
@@ -84,6 +86,16 @@ public class TodoServicesImpl implements TodoServices {
 
         List<TodoEntity> todos = jdbcTemplate.query(sql, rowMapper);
         return todos;
+    }
+
+    @Override
+    public boolean deleteTodoById(int idTodo) {
+          TodoEntity todoEntity = todoRepository.findById((long)idTodo).orElse(null);
+        if(todoEntity!=null){
+            todoRepository.delete(todoEntity);
+            return true;
+        }
+        return false;
     }
 
     
