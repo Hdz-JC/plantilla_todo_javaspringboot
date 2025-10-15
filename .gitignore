@@ -12,6 +12,7 @@ target/
 .settings
 .springBeans
 .sts4-cache
+docker-helper.sh
 
 ### IntelliJ IDEA ###
 .idea
