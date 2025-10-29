@@ -64,7 +64,7 @@ public class TodoServicesImpl implements TodoServices {
             todoEntity.setTitle(entity.getTitle());
             todoEntity.setDescription(entity.getDescription());
             // el error viene desde aqui
-            todoEntity.setStatus(TodoStatus.COMPLETED);
+            todoEntity.setStatus(entity.getStatus());
             todoRepository.save(todoEntity);
             return todoEntity;
         }
