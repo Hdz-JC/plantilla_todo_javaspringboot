@@ -1,0 +1,48 @@
+name: Java CI with Maven
+
+on:
+    push:
+        tags:
+            - "back2.*"
+    workflow_dispatch:
+
+jobs:
+    build:
+        runs-on: ubuntu-latest
+        permissions:
+            contents: write
+
+        steps:
+            - name: Checkout código
+              uses: actions/checkout@v4
+
+            - name: Mostrar información del tag (debug)
+              run: |
+                  echo "GITHUB_REF: $GITHUB_REF"
+                  echo "GITHUB_REF_NAME: $GITHUB_REF_NAME"
+                  echo "GITHUB_SHA: $GITHUB_SHA"
+
+            - name: Set up Docker Buildx
+              uses: docker/setup-buildx-action@v3
+              with:
+                  platforms: linux/amd64
+                  install: true
+
+            - name: Build Docker image
+              run: |
+                  docker buildx build \
+                    --platform linux/amd64 \
+                    -t todo-back-todo:${{ github.ref_name }} \
+                    -t todo-back-todo:latest \
+                    --load .
+            - name: Save Docker image
+              run: |
+                  docker save -o todo.tar todo-back-todo:${{ github.ref_name }}
+
+            - name: Create Release
+              uses: softprops/action-gh-release@v2
+              with:
+                  files: todo.tar
+                  body: "Release of version ${{ github.ref_name }}"
+                  draft: false
+                  prerelease: false
